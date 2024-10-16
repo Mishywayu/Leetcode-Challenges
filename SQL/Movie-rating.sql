@@ -1,22 +1,40 @@
-# Write your MySQL query statement below
-select name as results
-from 
-(select Users.name, count(movie_id) as movie_count
-from MovieRating
-left join Users 
-on MovieRating.user_id=Users.user_id
-group by MovieRating.user_id
-order by movie_count desc, name
-limit 1) a
-union
-select movie_name as results
-from 
-(
-SELECT Movies.title as movie_name, avg(MovieRating.rating) as grade 
-from MovieRating
-left join Movies
-on MovieRating.movie_id=Movies.movie_id
-where SUBSTR(MovieRating.created_at,1,7)="2020-02"
-group by MovieRating.movie_id
-order by grade desc, movie_name
-limit 1) b
+-- #Write solution here
+-- Find the user who has rated the most movies
+SELECT 
+    ur.name AS results
+FROM (
+    SELECT 
+        u.name, 
+        COUNT(mr.movie_id) AS rating_count
+    FROM 
+        Users u
+    JOIN 
+        MovieRating mr ON u.user_id = mr.user_id
+    GROUP BY 
+        u.name
+    ORDER BY 
+        rating_count DESC, u.name
+    LIMIT 1
+) AS ur
+
+UNION ALL
+
+-- Find the movie with the highest average rating in February 2020
+SELECT 
+    mf.title AS results
+FROM (
+    SELECT 
+        m.title, 
+        AVG(mr.rating) AS avg_rating
+    FROM 
+        Movies m
+    JOIN 
+        MovieRating mr ON m.movie_id = mr.movie_id
+    WHERE 
+        mr.created_at BETWEEN '2020-02-01' AND '2020-02-29'
+    GROUP BY 
+        m.title
+    ORDER BY 
+        avg_rating DESC, m.title
+    LIMIT 1
+) AS mf;
