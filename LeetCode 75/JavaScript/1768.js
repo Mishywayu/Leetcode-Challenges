@@ -17,5 +17,6 @@
 
 // ROUGH WORK
 var mergeAlternately = function(word1, word2) {
+    merged = []
     
 };
